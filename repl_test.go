@@ -21,6 +21,18 @@ func TestCleanInput(t *testing.T) {
 			input:    "  On top of the world,                    looking down on creation  ",
 			expected: []string{"on", "top", "of", "the", "world,", "looking", "down", "on", "creation"},
 		},
+		{
+			input:    "",
+			expected: []string{},
+		},
+		{
+			input:    "  H,e,L,l,O  world  ",
+			expected: []string{"h,e,l,l,o", "world"},
+		},
+		{
+			input:    "  h,e,l,l,o\t  world\n  ",
+			expected: []string{"h,e,l,l,o", "world"},
+		},
 	}
 
 	for _, c := range cases {
