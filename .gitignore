@@ -8,6 +8,8 @@
 *.so
 *.dylib
 ./pokedexcli
+pokedexcli
+repl.log
 
 # Test binary, built with `go test -c`
 *.test
