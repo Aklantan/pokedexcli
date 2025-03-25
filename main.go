@@ -1,7 +1,10 @@
 package main
 
+import "github/Aklantan/pokedexcli/internal/pokecache"
+
 func main() {
 	config := NewConfig()
-	startRepl(config)
+	cache := pokecache.NewCache(7)
+	startRepl(config, cache)
 
 }

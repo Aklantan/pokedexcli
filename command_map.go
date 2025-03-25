@@ -3,8 +3,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github/Aklantan/pokedexcli/internal/pokecache"
 	"io"
-	"log"
 	"net/http"
 )
 
@@ -19,63 +19,54 @@ type LocationList struct {
 	PreviousLocation string     `json:"previous"`
 }
 
-func commandMap(config *Config) error {
+func commandMap(config *Config, cache *pokecache.Cache) error {
 	url := "https://pokeapi.co/api/v2/location-area/"
 	if config.NextLocationAreaURL != nil {
 		url = *config.NextLocationAreaURL
 	}
-	res, err := http.Get(url)
-	if err != nil {
-		log.Fatal(err)
-	}
-	body, err := io.ReadAll(res.Body)
-	res.Body.Close()
-	if res.StatusCode > 299 {
-		log.Fatalf("Response failed with status code: %d and\nbody: %s\n", res.StatusCode, body)
-	}
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	areas := LocationList{}
-	config.NextLocationAreaURL = &areas.NextLocation
-	config.PreviousLocationAreaURL = &areas.PreviousLocation
-	err = json.Unmarshal(body, &areas)
-	if err != nil {
-		log.Fatal(err)
-	}
-	for _, location := range areas.Locations {
-		fmt.Println(location.Name)
-	}
+	mapHelper(url, config, cache)
 
 	return nil
 }
 
-func commandMapB(config *Config) error {
-	if *config.PreviousLocationAreaURL == "" {
+func commandMapB(config *Config, cache *pokecache.Cache) error {
+	if config.PreviousLocationAreaURL == nil || *config.PreviousLocationAreaURL == "" {
 		return fmt.Errorf("you're on the first page")
 	}
 	url := *config.PreviousLocationAreaURL
-	res, err := http.Get(url)
-	if err != nil {
-		log.Fatal(err)
-	}
-	body, err := io.ReadAll(res.Body)
-	res.Body.Close()
-	if res.StatusCode > 299 {
-		log.Fatalf("Response failed with status code: %d and\nbody: %s\n", res.StatusCode, body)
-	}
-	if err != nil {
-		log.Fatal(err)
-	}
+	mapHelper(url, config, cache)
+	return nil
+}
 
+func mapHelper(url string, config *Config, cache *pokecache.Cache) error {
+	var body []byte
+	cached_data, exists := cache.Get(url)
+	if exists {
+		body = cached_data
+	} else {
+		res, err := http.Get(url)
+		if err != nil {
+			return fmt.Errorf("%v", err)
+		}
+		defer res.Body.Close()
+		body, err = io.ReadAll(res.Body)
+		if err != nil {
+			return fmt.Errorf("%v", err)
+		}
+		if res.StatusCode > 299 {
+			return fmt.Errorf("Response failed with status code: %d and\nbody: %s\n", res.StatusCode, body)
+		}
+		cache.Add(url, body)
+
+	}
 	areas := LocationList{}
+
+	err := json.Unmarshal(body, &areas)
+	if err != nil {
+		return fmt.Errorf("%v", err)
+	}
 	config.NextLocationAreaURL = &areas.NextLocation
 	config.PreviousLocationAreaURL = &areas.PreviousLocation
-	err = json.Unmarshal(body, &areas)
-	if err != nil {
-		log.Fatal(err)
-	}
 	for _, location := range areas.Locations {
 		fmt.Println(location.Name)
 	}

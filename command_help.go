@@ -1,8 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"github/Aklantan/pokedexcli/internal/pokecache"
+)
 
-func commandHelp(config *Config) error {
+func commandHelp(config *Config, cache *pokecache.Cache) error {
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Print("Usage:\n\n")
 	for _, command := range commands {

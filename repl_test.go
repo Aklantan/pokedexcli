@@ -1,6 +1,10 @@
 package main
 
-import "testing"
+import (
+	"github/Aklantan/pokedexcli/internal/pokecache"
+	"testing"
+	"time"
+)
 
 func TestCleanInput(t *testing.T) {
 	// ...
@@ -54,5 +58,20 @@ func TestCleanInput(t *testing.T) {
 				t.Errorf("words not as expected got %v, expected %v", word, expectedWord)
 			}
 		}
+	}
+}
+
+func BenchmarkWithCache(b *testing.B) {
+	cache := pokecache.NewCache(5 * time.Minute)
+	config := &Config{}
+	url := "https://pokeapi.co/api/v2/location-area/"
+
+	// First request - should cache the result
+	mapHelper(url, config, cache)
+
+	// Benchmark cached requests
+	b.ResetTimer() // Don't count setup time
+	for i := 0; i < b.N; i++ {
+		mapHelper(url, config, cache)
 	}
 }

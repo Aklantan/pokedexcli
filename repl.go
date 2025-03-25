@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github/Aklantan/pokedexcli/internal/pokecache"
 	"os"
 	"strings"
 )
@@ -10,12 +11,12 @@ import (
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(config *Config) error
+	callback    func(config *Config, cache *pokecache.Cache) error
 }
 
 var commands map[string]cliCommand
 
-func startRepl(config *Config) {
+func startRepl(config *Config, cache *pokecache.Cache) {
 	commands = map[string]cliCommand{
 		"exit": {
 			name:        "exit",
@@ -47,7 +48,7 @@ func startRepl(config *Config) {
 			if len(input) > 0 {
 				command, exists := commands[input[0]]
 				if exists {
-					err := command.callback(config)
+					err := command.callback(config, cache)
 					if err != nil {
 						fmt.Println(err)
 					}
