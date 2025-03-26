@@ -11,7 +11,7 @@ import (
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(config *Config, cache *pokecache.Cache) error
+	callback    func(config *Config, cache *pokecache.Cache, parameter string) error
 }
 
 var commands map[string]cliCommand
@@ -38,8 +38,14 @@ func startRepl(config *Config, cache *pokecache.Cache) {
 			description: "Displays the previous 20 areas available",
 			callback:    commandMapB,
 		},
+		"explore": {
+			name:        "explore",
+			description: "Displays the pokemon that can be found in the area",
+			callback:    commandExplore,
+		},
 	}
 	scanner := bufio.NewScanner(os.Stdin)
+	parameter := ""
 	for {
 		fmt.Print("Pokedex> ")
 		if scanner.Scan() {
@@ -47,8 +53,11 @@ func startRepl(config *Config, cache *pokecache.Cache) {
 			input := cleanInput(line)
 			if len(input) > 0 {
 				command, exists := commands[input[0]]
+				if len(input) > 1 {
+					parameter = input[1]
+				}
 				if exists {
-					err := command.callback(config, cache)
+					err := command.callback(config, cache, parameter)
 					if err != nil {
 						fmt.Println(err)
 					}

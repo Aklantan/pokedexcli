@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func commandExit(config *Config, cache *pokecache.Cache) error {
+func commandExit(config *Config, cache *pokecache.Cache, parameter string) error {
 	fmt.Println("Closing the Pokedex... Goodbye!")
 	err := fmt.Errorf("program exited")
 	os.Exit(0)

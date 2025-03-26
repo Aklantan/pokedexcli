@@ -19,7 +19,7 @@ type LocationList struct {
 	PreviousLocation string     `json:"previous"`
 }
 
-func commandMap(config *Config, cache *pokecache.Cache) error {
+func commandMap(config *Config, cache *pokecache.Cache, parameter string) error {
 	url := "https://pokeapi.co/api/v2/location-area/"
 	if config.NextLocationAreaURL != nil {
 		url = *config.NextLocationAreaURL
@@ -29,7 +29,7 @@ func commandMap(config *Config, cache *pokecache.Cache) error {
 	return nil
 }
 
-func commandMapB(config *Config, cache *pokecache.Cache) error {
+func commandMapB(config *Config, cache *pokecache.Cache, parameter string) error {
 	if config.PreviousLocationAreaURL == nil || *config.PreviousLocationAreaURL == "" {
 		return fmt.Errorf("you're on the first page")
 	}
