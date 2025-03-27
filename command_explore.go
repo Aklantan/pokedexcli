@@ -8,12 +8,22 @@ import (
 	"net/http"
 )
 
-type Area struct {
-	PokemonEncounters []
+type Pokemon struct {
+	Name string `json:"name"`
+	Url  string `json:"url"`
+}
+
+type Encounter struct {
+	Pokemon Pokemon `json:"pokemon"`
+}
+
+type EncounterList struct {
+	Encounters []Encounter `json:"pokemon_encounters"`
 }
 
 func commandExplore(config *Config, cache *pokecache.Cache, parameter string) error {
 	url := "https://pokeapi.co/api/v2/location-area/" + parameter
+	fmt.Printf("Exploring %s\n", parameter)
 	exploreHelper(url, config, cache)
 	return nil
 
@@ -40,13 +50,18 @@ func exploreHelper(url string, config *Config, cache *pokecache.Cache) error {
 		cache.Add(url, body)
 
 	}
-	pokemons := []interface 
+	var pokemons EncounterList
+	{
+	}
 
 	err := json.Unmarshal(body, &pokemons)
 	if err != nil {
 		return fmt.Errorf("%v", err)
 	}
-	fmt.Println(body)
+	fmt.Println("Found Pokemon:")
+	for _, pokemon := range pokemons.Encounters {
+		fmt.Printf(" - %s\n", pokemon.Pokemon.Name)
+	}
 
 	return nil
 }

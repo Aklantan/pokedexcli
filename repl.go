@@ -40,7 +40,7 @@ func startRepl(config *Config, cache *pokecache.Cache) {
 		},
 		"explore": {
 			name:        "explore",
-			description: "Displays the pokemon that can be found in the area",
+			description: "Displays the pokemon that can be found in the area. Add location as a parameter to this command",
 			callback:    commandExplore,
 		},
 	}
