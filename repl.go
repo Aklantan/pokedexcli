@@ -43,6 +43,11 @@ func startRepl(config *Config, cache *pokecache.Cache) {
 			description: "Displays the pokemon that can be found in the area. Add location as a parameter to this command",
 			callback:    commandExplore,
 		},
+		"catch": {
+			name:        "catch",
+			description: "Attempt to catch a pokemon. Add pokemon as a parameter to this command",
+			callback:    commandCatch,
+		},
 	}
 	scanner := bufio.NewScanner(os.Stdin)
 	parameter := ""
