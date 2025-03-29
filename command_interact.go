@@ -12,6 +12,9 @@ import (
 type PokemonProfile struct {
 	Name           string `json:"name"`
 	BaseExperience int    `json:"base_experience"`
+	ID             int    `json:"id"`
+	Height         int    `json:"height"`
+	Weight         int    `json:"weight"`
 }
 
 func commandCatch(config *Config, cache *pokecache.Cache, parameter string) error {
@@ -49,17 +52,21 @@ func catchHelper(url string, config *Config, cache *pokecache.Cache) error {
 	if err != nil {
 		return fmt.Errorf("%v", err)
 	}
-	fmt.Printf("Throwing Pokeball at %s...\n", pokemon.Name)
+	fmt.Printf("Throwing a Pokeball at %s...\n", pokemon.Name)
 
 	chance := 255 - pokemon.BaseExperience
 	pokeball := rand.Intn(255)
 	if pokeball < chance {
 		fmt.Printf("%v was caught!\n", pokemon.Name)
 		config.Pokedex[pokemon.Name] = pokemon
-		fmt.Print(config.Pokedex)
 	} else {
 		fmt.Printf("%v escaped!\n", pokemon.Name)
 	}
 
+	return nil
+}
+
+func commandInspect(config *Config, cache *pokecache.Cache, parameter string) error {
+	fmt.Printf("Name: %s\n", config.Pokedex[parameter].Name)
 	return nil
 }

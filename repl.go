@@ -48,6 +48,11 @@ func startRepl(config *Config, cache *pokecache.Cache) {
 			description: "Attempt to catch a pokemon. Add pokemon as a parameter to this command",
 			callback:    commandCatch,
 		},
+		"inspect": {
+			name:        "inspect",
+			description: "Inspect a pokemon. Add pokemon as a parameter to this command",
+			callback:    commandInspect,
+		},
 	}
 	scanner := bufio.NewScanner(os.Stdin)
 	parameter := ""
