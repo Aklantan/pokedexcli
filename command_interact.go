@@ -68,5 +68,8 @@ func catchHelper(url string, config *Config, cache *pokecache.Cache) error {
 
 func commandInspect(config *Config, cache *pokecache.Cache, parameter string) error {
 	fmt.Printf("Name: %s\n", config.Pokedex[parameter].Name)
+	fmt.Printf("ID: %d\n", config.Pokedex[parameter].ID)
+	fmt.Printf("Height: %d\n", config.Pokedex[parameter].Height)
+	fmt.Printf("Weight: %d\n", config.Pokedex[parameter].Weight)
 	return nil
 }
