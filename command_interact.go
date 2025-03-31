@@ -10,11 +10,26 @@ import (
 )
 
 type PokemonProfile struct {
-	Name           string `json:"name"`
-	BaseExperience int    `json:"base_experience"`
-	ID             int    `json:"id"`
-	Height         int    `json:"height"`
-	Weight         int    `json:"weight"`
+	Name           string     `json:"name"`
+	BaseExperience int        `json:"base_experience"`
+	ID             int        `json:"id"`
+	Height         int        `json:"height"`
+	Weight         int        `json:"weight"`
+	Types          []PokeType `json:"types"`
+	Stats          []PokeStat `json:"stats"`
+}
+
+type PokeType struct {
+	Type struct {
+		Name string `json:"name"`
+	} `json:"type"`
+}
+
+type PokeStat struct {
+	Stat struct {
+		Name string `json:"name"`
+	} `json:"stat"`
+	Value int `json:"base_stat"`
 }
 
 func commandCatch(config *Config, cache *pokecache.Cache, parameter string) error {
@@ -67,9 +82,34 @@ func catchHelper(url string, config *Config, cache *pokecache.Cache) error {
 }
 
 func commandInspect(config *Config, cache *pokecache.Cache, parameter string) error {
-	fmt.Printf("Name: %s\n", config.Pokedex[parameter].Name)
-	fmt.Printf("ID: %d\n", config.Pokedex[parameter].ID)
-	fmt.Printf("Height: %d\n", config.Pokedex[parameter].Height)
-	fmt.Printf("Weight: %d\n", config.Pokedex[parameter].Weight)
+	_, exists := config.Pokedex[parameter]
+	if exists {
+		fmt.Printf("Name: %s\n", config.Pokedex[parameter].Name)
+		fmt.Printf("ID: %d\n", config.Pokedex[parameter].ID)
+		fmt.Printf("Height: %d\n", config.Pokedex[parameter].Height)
+		fmt.Printf("Weight: %d\n", config.Pokedex[parameter].Weight)
+		fmt.Println("Types:")
+		for _, poketype := range config.Pokedex[parameter].Types {
+			fmt.Printf("    - %s\n", poketype.Type.Name)
+		}
+		fmt.Println("Stats:")
+		for _, pokestat := range config.Pokedex[parameter].Stats {
+			fmt.Printf("    - %s : % d\n", pokestat.Stat.Name, pokestat.Value)
+		}
+
+	} else {
+		fmt.Printf("%s is not in your Pokedex yet.\n", parameter)
+	}
+
 	return nil
+}
+
+func commandPokedex(config *Config, cache *pokecache.Cache, parameter string) error {
+	fmt.Println("Your Pokedex - ")
+	for _, pokemon := range config.Pokedex {
+		fmt.Printf("    - %s\n", pokemon.Name)
+	}
+	fmt.Println("You can use the inspect command to look at details of these pokemon.")
+	return nil
+
 }

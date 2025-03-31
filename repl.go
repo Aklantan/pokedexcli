@@ -53,6 +53,11 @@ func startRepl(config *Config, cache *pokecache.Cache) {
 			description: "Inspect a pokemon. Add pokemon as a parameter to this command",
 			callback:    commandInspect,
 		},
+		"pokedex": {
+			name:        "pokedex",
+			description: "List all pokemon in your Pokedex",
+			callback:    commandPokedex,
+		},
 	}
 	scanner := bufio.NewScanner(os.Stdin)
 	parameter := ""
